@@ -80,10 +80,7 @@ module hazard_detection_unit (
     assign o_flush_if_id = branch_flush;
     
 	 // --- ID/EX Register Control ---
-    // Flush ID/EX in 2 cases:
-    // 1. Branch Taken: cancel the instruction in ID (has just decoded but wrong)
-    // 2. Data Stall: "install bubbles" (NOP - When Stall, IF/ID is stopped, but ID/EX still running)
-    //    phải biến lệnh đang đi vào ID/EX thành NOP để nó không làm gì cả ở các tầng sau.
+    // Flush ID/EX in Branch Taken: cancel the instruction in ID (has just decoded but wrong)
     assign o_flush_id_ex = branch_flush;
 
 endmodule
