@@ -1,10 +1,10 @@
 module pc(
-	input i_clk,
-	input i_reset,
-	input i_stall,
+	input logic i_clk,
+	input logic i_reset,
+	input logic i_stall,
 	
-	input  [31:0] i_pc_next,
-	output [31:0] o_pc
+	input  logic [31:0] i_pc_next,
+	output logic [31:0] o_pc
 );
 
 	always_ff @(posedge i_clk or negedge i_reset) begin 
@@ -14,6 +14,7 @@ module pc(
 			o_pc <= i_pc_next;
 		end 
 	end 
+
 
 
 endmodule 
