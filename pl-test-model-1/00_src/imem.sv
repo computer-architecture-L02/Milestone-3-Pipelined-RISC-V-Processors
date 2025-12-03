@@ -9,14 +9,14 @@ module imem(
 	 input  logic [31:0] i_pc,
     output logic [31:0] o_instr
 );
-	logic [31:0] inst_mem [0:16383];
-	logic [13:0] pc_word;
+	logic [31:0] inst_mem [0:2047];
+	logic [10:0] pc_word;
 	
-	//initial begin
-		//$readmemh("./../02_test/application_ver2.hex", inst_mem); //cả 2 file ok
-	//end
+	initial begin
+		$readmemh("./../02_test/isa_4b.hex", inst_mem);
+	end
 	
-	assign pc_word = i_pc[15:2];
+	assign pc_word = i_pc[12:2];
 	
 	assign o_instr = inst_mem[pc_word];
 endmodule
