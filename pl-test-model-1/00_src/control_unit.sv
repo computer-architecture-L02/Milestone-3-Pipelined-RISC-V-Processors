@@ -11,7 +11,7 @@ module control_unit (
     input  logic [31:0] i_instr,
 
     // Datapath / pipeline control
-    output logic        o_insn_vld,   // instruction is valid
+
     output logic        o_rd_wren,    // write-back to rd
     output logic        o_mem_wren,   // store to memory
     output logic        o_mem_ren,    // load from memory (is_load)
@@ -76,7 +76,6 @@ module control_unit (
     //--------------------------------------------------------------------------
     // Internal raw control signals
     //--------------------------------------------------------------------------
-    logic       insn_vld_tmp;
 
     logic       rd_wren_raw;
     logic       mem_wren_raw;
@@ -97,7 +96,6 @@ module control_unit (
     //--------------------------------------------------------------------------
     always_comb begin
         // Defaults correspond to a safe NOP
-        insn_vld_tmp = 1'b0;
 
         rd_wren_raw  = 1'b0;
         mem_wren_raw = 1'b0;
@@ -119,30 +117,21 @@ module control_unit (
             // R-type ALU operations
             //------------------------------------------------------------------
             OPC_RTYPE: begin
-                insn_vld_tmp = 1'b1;
                 rd_wren_raw  = 1'b1;
                 wb_sel_raw   = WB_ALU;
                 opa_sel_raw  = 1'b0;   // rs1
                 opb_sel_raw  = 1'b0;   // rs2
 
                 unique case (funct3)
-                    3'b000: begin
-                        // ADD / SUB: funct7[5] selects SUB
-                        if (funct7[5]) alu_op_raw = ALU_SUB;
-                        else           alu_op_raw = ALU_ADD;
-                    end
+                    3'b000: alu_op_raw = (funct7[5]) ? ALU_SUB : ALU_ADD; 
                     3'b001: alu_op_raw = ALU_SLL;
                     3'b010: alu_op_raw = ALU_SLT;
                     3'b011: alu_op_raw = ALU_SLTU;
                     3'b100: alu_op_raw = ALU_XOR;
-                    3'b101: begin
-                        // SRL / SRA: funct7[5] selects SRA
-                        if (funct7[5]) alu_op_raw = ALU_SRA;
-                        else           alu_op_raw = ALU_SRL;
-                    end
+                    3'b101: alu_op_raw = (funct7[5]) ? ALU_SRA : ALU_SRL;
                     3'b110: alu_op_raw = ALU_OR;
                     3'b111: alu_op_raw = ALU_AND;
-                    default: insn_vld_tmp = 1'b0;
+                    default: alu_op_raw = ALU_ADD;
                 endcase
             end
 
@@ -150,7 +139,7 @@ module control_unit (
             // I-type ALU operations
             //------------------------------------------------------------------
             OPC_ITYPE: begin
-                insn_vld_tmp = 1'b1;
+
                 rd_wren_raw  = 1'b1;
                 wb_sel_raw   = WB_ALU;
                 opa_sel_raw  = 1'b0;   // rs1
@@ -163,30 +152,9 @@ module control_unit (
                     3'b100: alu_op_raw = ALU_XOR;
                     3'b110: alu_op_raw = ALU_OR;
                     3'b111: alu_op_raw = ALU_AND;
-
-                    // SLLI
-                    3'b001: begin
-                        logic funct7_is_zero;
-                        funct7_is_zero = ~|(funct7 ^ 7'b0000000);
-                        alu_op_raw     = ALU_SLL;
-                        insn_vld_tmp   = funct7_is_zero;
-                    end
-
-                    // SRLI / SRAI
-                    3'b101: begin
-                        logic funct7_is_srl;
-                        logic funct7_is_sra;
-
-                        funct7_is_srl  = ~|(funct7 ^ 7'b0000000);
-                        funct7_is_sra  = ~|(funct7 ^ 7'b0100000);
-
-                        insn_vld_tmp   = funct7_is_srl | funct7_is_sra;
-
-                        alu_op_raw     = ALU_SRL;
-                        if (funct7_is_sra) alu_op_raw = ALU_SRA;
-                    end
-
-                    default: insn_vld_tmp = 1'b0;
+                    3'b001: alu_op_raw = ALU_SLL;
+                    3'b101: alu_op_raw = (funct7[5]) ? ALU_SRA : ALU_SRL;  
+                    default: alu_op_raw = ALU_ADD;
                 endcase
             end
 
@@ -194,7 +162,7 @@ module control_unit (
             // LOAD: LB, LH, LW, LBU, LHU
             //------------------------------------------------------------------
             OPC_LOAD: begin
-                insn_vld_tmp = 1'b1;
+
                 rd_wren_raw  = 1'b1;
                 mem_ren_raw  = 1'b1;
                 wb_sel_raw   = WB_LD;
@@ -208,15 +176,6 @@ module control_unit (
             // STORE: SB, SH, SW
             //------------------------------------------------------------------
             OPC_STORE: begin
-                logic is_sb;
-                logic is_sh;
-                logic is_sw;
-
-                is_sb        = ~|(funct3 ^ 3'b000);
-                is_sh        = ~|(funct3 ^ 3'b001);
-                is_sw        = ~|(funct3 ^ 3'b010);
-
-                insn_vld_tmp = is_sb | is_sh | is_sw;
 
                 mem_wren_raw = 1'b1;
                 opa_sel_raw  = 1'b0;   // rs1 (base)
@@ -228,21 +187,12 @@ module control_unit (
             // BRANCH: BEQ, BNE, BLT, BGE, BLTU, BGEU
             //------------------------------------------------------------------
             OPC_BRANCH: begin
-                logic is_beq;
-                logic is_bne;
-                logic is_blt;
-                logic is_bge;
+               
                 logic is_bltu;
                 logic is_bgeu;
 
-                is_beq  = ~|(funct3 ^ 3'b000);
-                is_bne  = ~|(funct3 ^ 3'b001);
-                is_blt  = ~|(funct3 ^ 3'b100);
-                is_bge  = ~|(funct3 ^ 3'b101);
                 is_bltu = ~|(funct3 ^ 3'b110);
                 is_bgeu = ~|(funct3 ^ 3'b111);
-
-                insn_vld_tmp = is_beq | is_bne | is_blt | is_bge | is_bltu | is_bgeu;
 
                 branch_raw   = 1'b1;
                 rd_wren_raw  = 1'b0;
@@ -262,7 +212,7 @@ module control_unit (
             // LUI: rd = imm << 12
             //------------------------------------------------------------------
             OPC_LUI: begin
-                insn_vld_tmp = 1'b1;
+
                 rd_wren_raw  = 1'b1;
                 wb_sel_raw   = WB_ALU;
 
@@ -275,7 +225,7 @@ module control_unit (
             // AUIPC: rd = PC + imm << 12
             //------------------------------------------------------------------
             OPC_AUIPC: begin
-                insn_vld_tmp = 1'b1;
+
                 rd_wren_raw  = 1'b1;
                 wb_sel_raw   = WB_ALU;
 
@@ -288,7 +238,7 @@ module control_unit (
             // JAL: rd = PC+4, PC = PC + immediate
             //------------------------------------------------------------------
             OPC_JAL: begin
-                insn_vld_tmp = 1'b1;
+
                 jal_raw      = 1'b1;
 
                 rd_wren_raw  = 1'b1;
@@ -303,7 +253,7 @@ module control_unit (
             // JALR: rd = PC+4, PC = rs1 + immediate
             //------------------------------------------------------------------
             OPC_JALR: begin
-                insn_vld_tmp = ~|(funct3 ^ 3'b000);
+
                 jalr_raw     = 1'b1;
 
                 rd_wren_raw  = 1'b1;
@@ -326,21 +276,20 @@ module control_unit (
     //--------------------------------------------------------------------------
     // Output assignments
     //--------------------------------------------------------------------------
-    assign o_insn_vld = insn_vld_tmp;
 
-    assign o_rd_wren  = rd_wren_raw  & insn_vld_tmp;
-    assign o_mem_wren = mem_wren_raw & insn_vld_tmp;
-    assign o_mem_ren  = mem_ren_raw  & insn_vld_tmp;
+    assign o_rd_wren  = rd_wren_raw;
+    assign o_mem_wren = mem_wren_raw;
+    assign o_mem_ren  = mem_ren_raw;
 
-    assign o_opa_sel  = insn_vld_tmp ? opa_sel_raw : 1'b0;
-    assign o_opb_sel  = insn_vld_tmp ? opb_sel_raw : 1'b0;
-    assign o_alu_op   = insn_vld_tmp ? alu_op_raw  : ALU_ADD;
-    assign o_wb_sel   = insn_vld_tmp ? wb_sel_raw  : WB_ALU;
+    assign o_opa_sel  = opa_sel_raw;
+    assign o_opb_sel  = opb_sel_raw;
+    assign o_alu_op   = alu_op_raw;
+    assign o_wb_sel   = wb_sel_raw;
 
     // For an invalid instruction, default to signed comparison
-    assign o_br_un    = br_un_raw | (~insn_vld_tmp);
+    assign o_br_un    = br_un_raw;
 
     // Control-transfer flag (used to build o_ctrl in WB)
-    assign o_is_ctrl  = (branch_raw | jal_raw | jalr_raw) & insn_vld_tmp;
+    assign o_is_ctrl  = (branch_raw | jal_raw | jalr_raw);
 
 endmodule
