@@ -4,7 +4,8 @@ module brc (
     input  logic [31:0] i_rs2_data,
     
     // Control Inputs
-    input  logic [31:0] i_instr,    // đi từ instruction qua
+    input  logic [31:0] i_instr,     // đi từ instruction qua
+	 input  logic 			i_br_un,    
     
     // Output
     output logic        o_pc_sel     // 1: Taken (nhảy), 0: Not Taken
@@ -51,12 +52,9 @@ module brc (
     assign signed_less   = sum_sign ^ overflow;                         // Signed Less
     assign unsigned_less = ~c_out;                                      // Unsigned Less (Borrow)
     
-	 // Determine if comparison should be unsigned (1 if signed)
-    // BLTU (110) and BGEU (111) use unsigned comparison
-    assign br_un = ~((~|(funct3 ^ 3'b110)) || (~|(funct3 ^ 3'b111)));
 		  
     // Choose Less result based on br_un
-    assign is_less = br_un ? signed_less : unsigned_less;
+    assign is_less = i_br_un ? signed_less : unsigned_less;
 
 	 //======================================================
     // --- 2. Branch Decision Logic ---
