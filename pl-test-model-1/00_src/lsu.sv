@@ -110,7 +110,7 @@ module lsu(
     always_ff @(posedge i_clk or negedge i_reset) begin
 		 if (!i_reset) begin
 			  word_data <= 32'b0;
-		 end else if (i_lsu_ren) begin
+		 end else if (i_lsu_ren && i_lsu_ren) begin
 			  word_data <= memory[word_addr];  // Read with 1 cycle delay
 		 end
 	 end
@@ -265,3 +265,4 @@ module lsu(
     assign o_io_lcd = reg_lcd;
 
 endmodule
+
