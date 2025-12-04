@@ -47,7 +47,7 @@ module pipelined (
 	 logic [1:0] ctrl_wb_sel;
 	 logic 		 ctrl_opa_sel;
 	 logic 		 ctrl_opb_sel;
-	 logic [4:0] ctrl_alu_op;
+	 logic [3:0] ctrl_alu_op;
 	 logic 		 ctrl_br_un;
 	 logic 		 ctrl_is_ctrl;
 	 
@@ -100,7 +100,7 @@ module pipelined (
 	 logic [31:0] io_ledr_mem;
     logic [31:0] io_ledg_mem;
     logic [6:0]  io_hex0_mem, io_hex1_mem, io_hex2_mem, io_hex3_mem;
-    logic [6:0]  io_hex4, io_hex5_mem, io_hex6_mem, io_hex7_mem;
+	logic [6:0]  io_hex4_mem, io_hex5_mem, io_hex6_mem, io_hex7_mem;
     logic [31:0] io_lcd_mem;
 	 logic [31:0] pc_four_mem;
 	 logic 		  mispred_mem;
