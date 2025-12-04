@@ -61,9 +61,6 @@ module pipelined (
 	 // ID
 	 logic [31:0] rs1_data_id;
 	 logic [31:0] rs2_data_id;
-	 logic [31:0] imm_ext;
-	 logic [31:0] alu_data;
-	 logic [31:0] lsu_rdata;
 	 logic 		  insn_vld_id;
 	 logic [31:0] ImmExt_id;
 	 
@@ -283,7 +280,7 @@ module pipelined (
 	 );
 	 
 	 opbsel opbsel(
-			  .i_ImmExt			(pc_ex),
+			  .i_ImmExt			(ImmExt_ex),
 			  .i_rs2_data		(rs2_data_ex),
 			  .i_opb_sel		(opb_sel_ex),
 			  .o_operand_b		(operand_b)
@@ -353,7 +350,8 @@ module pipelined (
         .i_st_data  (rs2_data_mem),
         .i_lsu_wren (mem_wren_mem),
         .i_funct3   (instr_mem[14:12]),
-        .o_ld_data  (ld_data_mem),     
+		  .i_lsu_ren  (mem_ren_mem)
+        .o_ld_data  (ld_data_mem),  	  
         
         // I/O Interface (Nối ra ngoài module pipelined)
         .o_io_ledr  (io_ledr_mem),
