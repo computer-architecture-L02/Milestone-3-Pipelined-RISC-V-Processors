@@ -41,15 +41,15 @@ module pipelined (
 	 logic flush_id_ex;
 	 
 	 // Control Signals (pha ID)
-	 logic ctrl_rd_wren;
-	 logic ctrl_mem_wren;
-	 logic ctrl_mem_ren;
-	 logic ctrl_wb_sel;
-	 logic ctrl_opa_sel;
-	 logic ctrl_opb_sel;
-	 logic ctrl_alu_op;
-	 logic ctrl_br_un;
-	 logic ctrl_is_ctrl;
+	 logic 		 ctrl_rd_wren;
+	 logic 		 ctrl_mem_wren;
+	 logic 		 ctrl_mem_ren;
+	 logic [1:0] ctrl_wb_sel;
+	 logic 		 ctrl_opa_sel;
+	 logic 		 ctrl_opb_sel;
+	 logic [4:0] ctrl_alu_op;
+	 logic 		 ctrl_br_un;
+	 logic 		 ctrl_is_ctrl;
 	 
 	 // Data Signals
 	 
@@ -78,7 +78,7 @@ module pipelined (
 	 logic		  opa_sel_ex;
 	 logic 		  opb_sel_ex;
 	 logic 		  br_un_ex;
-	 logic 		  wb_sel_ex;
+	 logic [1:0]  wb_sel_ex;
 	 logic 		  insn_vld_ex;
 	 logic 		  is_ctrl_ex;
 	 logic [31:0] operand_a;
@@ -93,7 +93,7 @@ module pipelined (
 	 logic 		  rd_wren_mem;
 	 logic 		  mem_ren_mem;
 	 logic 		  mem_wren_mem;
-	 logic 		  wb_sel_mem;
+	 logic [1:0]  wb_sel_mem;
 	 logic 		  is_ctrl_mem;
 	 logic 		  insn_vld_mem;
 	 logic [31:0] ld_data_mem;
