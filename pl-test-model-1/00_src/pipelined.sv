@@ -22,7 +22,6 @@ module pipelined (
 	 //======================================================
 	 
 	 // PC & Instructions
-	 logic [31:0] next_pc;
 	 logic [31:0] pc_if;
 	 logic [31:0] pc_id;
 	 logic [31:0] pc_ex;
@@ -52,7 +51,6 @@ module pipelined (
 	 logic 		 ctrl_is_ctrl;
 	 
 	 // Data Signals
-	 
 	 // IF
 	 logic [31:0] pc_four_if;
 	 logic [31:0] pc_next;
@@ -100,7 +98,7 @@ module pipelined (
 	 logic [31:0] io_ledr_mem;
     logic [31:0] io_ledg_mem;
     logic [6:0]  io_hex0_mem, io_hex1_mem, io_hex2_mem, io_hex3_mem;
-	logic [6:0]  io_hex4_mem, io_hex5_mem, io_hex6_mem, io_hex7_mem;
+    logic [6:0]  io_hex4_mem, io_hex5_mem, io_hex6_mem, io_hex7_mem;
     logic [31:0] io_lcd_mem;
 	 logic [31:0] pc_four_mem;
 	 logic 		  mispred_mem;
@@ -116,13 +114,14 @@ module pipelined (
     logic [1:0]  wb_sel_wb;
 	 
 	 // ======================================================
-    // 						HAZARD DETECTION INSTANCE
+    // 						HAZARD DETECTION 
     // ======================================================
     
     hazard_detection_unit u_hazard (
         // Inputs from ID
         .i_rs1_addr     (instr_id[19:15]),
         .i_rs2_addr     (instr_id[24:20]),
+		  .i_instr			(instr_id),
         
         // Inputs from EX
         .i_rd_addr_ex   (rd_addr_ex),
@@ -138,7 +137,6 @@ module pipelined (
         // Outputs
         .o_stall_pc     (stall_pc),
         .o_stall_if_id  (stall_if_id),
-        .o_stall_id_ex  (stall_id_ex),
         .o_flush_if_id  (flush_if_id),
         .o_flush_id_ex  (flush_id_ex)
     );
@@ -350,7 +348,7 @@ module pipelined (
         .i_st_data  (rs2_data_mem),
         .i_lsu_wren (mem_wren_mem),
         .i_funct3   (instr_mem[14:12]),
-		  .i_lsu_ren  (mem_ren_mem)
+		  .i_lsu_ren  (mem_ren_mem),
         .o_ld_data  (ld_data_mem),  	  
         
         // I/O Interface (Nối ra ngoài module pipelined)
