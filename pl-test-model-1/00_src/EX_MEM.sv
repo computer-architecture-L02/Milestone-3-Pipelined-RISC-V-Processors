@@ -1,7 +1,6 @@
 module EX_MEM(
     input  logic        i_clk,
     input  logic        i_reset,
-    /* input logic 	i_flush,*/
 	 
     // Data from EX stage
     input  logic [31:0] i_pc,
@@ -42,21 +41,13 @@ module EX_MEM(
             o_rd_addr   <= 5'h0;
             o_instr     <= 32'h0;
             o_rd_wren   <= 1'b0;
-			o_mem_ren	<= 1'b0;
+				o_mem_ren	<= 1'b0;
             o_mem_wren  <= 1'b0;
             o_wb_sel    <= 2'h0;
             o_ctrl      <= 1'b0;
             o_insn_vld  <= 1'b0;
-			o_mispred	<= 1'b0;
-        end else /*if (i_flush) begin
-            // Flush: Xóa control signals
-            o_rd_wren   <= 1'b0;
-			o_mem_ren	<= 1'b0;
-            o_mem_wren  <= 1'b0;
-            o_ctrl      <= 1'b0;
-            o_insn_vld  <= 1'b0;
-			o_mispred	<= 1'b0;			
-        end else*/ begin
+				o_mispred	<= 1'b0;
+        end else begin
             // Normal
             o_pc        <= i_pc;
             o_alu_data  <= i_alu_data;
@@ -64,12 +55,12 @@ module EX_MEM(
             o_rd_addr   <= i_rd_addr;
             o_instr     <= i_instr;
             o_rd_wren   <= i_rd_wren;
-			o_mem_ren	<= i_mem_ren;
+				o_mem_ren	<= i_mem_ren;
             o_mem_wren  <= i_mem_wren;
             o_wb_sel    <= i_wb_sel;
             o_ctrl      <= i_ctrl;
             o_insn_vld  <= i_insn_vld;
-			o_mispred	<= i_mispred;			
+				o_mispred	<= i_mispred;			
         end
     end
 

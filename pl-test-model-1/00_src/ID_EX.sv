@@ -1,7 +1,6 @@
 module ID_EX(
     input  logic        i_clk,
     input  logic        i_reset,
-    input  logic        i_stall,
     input  logic        i_flush,
     
     // Data từ ID stage
@@ -68,34 +67,25 @@ module ID_EX(
 				o_instr		<= 32'b0;
 				o_ctrl		<= 1'b0;
         end else if (i_flush) begin
-            // Flush: Xóa control signals (tạo bubble)
-            // Data giữ nguyên (không quan trọng)
-            o_rd_wren <= 1'b0;  // QUAN TRỌNG: Không ghi vào register
-            o_mem_ren <= 1'b0;  // Không đọc memory
-            o_mem_wren <= 1'b0;  // Không ghi memory
-            o_insn_vld  <= 1'b0;  // Instruction không hợp lệ
+            o_pc        <= 32'h0;
+            o_rs1_data  <= 32'h0;
+            o_rs2_data  <= 32'h0;
+            o_ImmExt    <= 32'h0;
+            o_rs1_addr  <= 5'h0;
+            o_rs2_addr  <= 5'h0;
+            o_rd_addr   <= 5'h0;
+            o_rd_wren   <= 1'b0;
+            o_mem_ren   <= 1'b0;
+            o_mem_wren  <= 1'b0;
+            o_alu_op    <= 4'h0;
+            o_opa_sel   <= 1'b0;
+				o_opb_sel   <= 1'b0;
+				o_br_un		<= 1'b1;
+            o_wb_sel    <= 2'h0;
+            o_insn_vld  <= 1'b0;
+				o_instr		<= 32'b0;
 				o_ctrl		<= 1'b0;
-            // Các signal khác giữ nguyên (không ảnh hưởng vì control = 0)
-        end else if (i_stall) begin
-				o_pc        <= o_pc;
-            o_rs1_data  <= o_rs1_data;
-            o_rs2_data  <= o_rs2_data;
-            o_ImmExt    <= o_ImmExt;
-            o_rs1_addr  <= o_rs1_addr;
-            o_rs2_addr  <= o_rs2_addr;
-            o_rd_addr   <= o_rd_addr;
-            o_rd_wren   <= o_rd_wren;
-            o_mem_ren   <= o_mem_ren;
-            o_mem_wren  <= o_mem_wren;
-            o_alu_op    <= o_alu_op;
-            o_opa_sel   <= o_opa_sel;
-				o_opb_sel   <= o_opb_sel;
-				o_br_un		<= o_br_un;
-            o_wb_sel    <= o_wb_sel ;
-            o_insn_vld  <= o_insn_vld;
-				o_instr		<= o_instr;
-				o_ctrl 		<= o_ctrl;
-		  end else begin
+        end else begin
             // Normal: Lưu tất cả tín hiệu
             o_pc        <= i_pc;
             o_rs1_data  <= i_rs1_data;

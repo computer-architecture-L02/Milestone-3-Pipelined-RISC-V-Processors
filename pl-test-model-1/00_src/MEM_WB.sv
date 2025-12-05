@@ -1,7 +1,6 @@
 module MEM_WB(
     input  logic        i_clk,
     input  logic        i_reset,
-    // Không có stall/flush (WB stage luôn chạy)
     
     // Data from MEM stage
 	 input  logic [31:0] i_pc,

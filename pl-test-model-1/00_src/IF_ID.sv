@@ -17,14 +17,14 @@ module IF_ID(
 
 	always_ff @(posedge i_clk or negedge i_reset) begin
         if (!i_reset) begin
-            o_pc      <= 32'h0;
-            o_instr	 <= 32'h0;
-            o_insn_vld   <= 1'b0;
+            o_pc       <= 32'h0;
+            o_instr	  <= 32'h0;
+            o_insn_vld <= 1'b0;
         end else if (i_flush) begin
             // Flush: Chuyển thành NOP = ADDI x0, x0, 0 = 0x00000013
-            o_instr		  <= 32'h00000013;
-            o_insn_vld    <= 1'b0;  // Instruction không hợp lệ
-            // PC giữ nguyên (không quan trọng vì NOP)
+            o_instr	  <= 32'h00000013;
+				o_pc		  <= 32'b0;
+				o_insn_vld <= 1'b0;  // Instruction không hợp lệ
         end else if (i_stall) begin 
 				//Stall: Giữ nguyên giá trị cũ
 				o_pc	  <= o_pc;
