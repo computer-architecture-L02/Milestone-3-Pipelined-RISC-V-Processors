@@ -7,7 +7,7 @@ module forward_b(
 );
 
 	always_comb begin
-		case (i_forward_b) begin
+		case (i_forward_b)
 			2'b00: o_alu_op_b_fwd = i_rs2_data_ex;
 			2'b01: o_alu_op_b_fwd = i_data_to_wb;
 			2'b10: o_alu_op_b_fwd = i_wb_data;
