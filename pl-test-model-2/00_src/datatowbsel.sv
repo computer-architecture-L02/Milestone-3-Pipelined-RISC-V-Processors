@@ -1,7 +1,7 @@
 module datatowbsel(
 	input  logic [31:0] i_pc_four_mem,
 	input  logic [31:0] i_alu_data_mem,
-	input  logic  		  i_wb_sel_mem,
+	input  logic [1:0] i_wb_sel_mem,
 	output logic [31:0] o_data_to_wb
 );
 
