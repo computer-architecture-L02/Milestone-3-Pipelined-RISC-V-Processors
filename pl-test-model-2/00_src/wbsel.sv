@@ -5,6 +5,6 @@ module wbsel(
 	output logic [31:0] o_wb_data
 );
 
-	assign o_wb_data = (i_wb_sel_wb[0]) ? i_data_to_wb : i_ld_data;
+	assign o_wb_data = (i_wb_sel_wb[0]) ? i_ld_data : i_data_to_wb;
 
 endmodule 
