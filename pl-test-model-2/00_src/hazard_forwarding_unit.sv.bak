@@ -60,7 +60,7 @@ module hazard_forwarding_unit (
 
     // Load Detection
     logic is_load;
-    assign is_load = i_mem_ren_ex && |i_rd_addr_ex && 
+    assign is_load = i_mem_ren_ex && ~|i_rd_addr_ex && 
 									  ((rs1_used && ~|(i_rs1_addr_id ^ i_rd_addr_ex)) || 
 									  (rs2_used && ~|(i_rs2_addr_id ^ i_rd_addr_ex)));
 
@@ -79,11 +79,11 @@ module hazard_forwarding_unit (
         o_forward_a = 2'b00; // Mặc định lấy từ ID/EX
 
         // lấy mem trc
-        if (i_rd_wren_mem && |i_rd_addr_mem && ~|(i_rd_addr_mem ^ i_rs1_addr_ex)) begin
+        if (i_rd_wren_mem && ~|i_rd_addr_mem && ~|(i_rd_addr_mem ^ i_rs1_addr_ex)) begin
             o_forward_a = 2'b01;
         end
         // hong fw từ mem thì lấy từ WB
-        else if (i_rd_wren_wb && |i_rd_addr_wb && ~|(i_rd_addr_wb ^ i_rs1_addr_ex)) begin
+        else if (i_rd_wren_wb && ~|i_rd_addr_wb && ~|(i_rd_addr_wb ^ i_rs1_addr_ex)) begin
             o_forward_a = 2'b10;
         end
     end
@@ -92,9 +92,9 @@ module hazard_forwarding_unit (
     always_comb begin
         o_forward_b = 2'b00;
 
-        if (i_rd_wren_mem && |i_rd_addr_mem && ~|(i_rd_addr_mem ^ i_rs2_addr_ex)) begin
+        if (i_rd_wren_mem && ~|i_rd_addr_mem && ~|(i_rd_addr_mem ^ i_rs2_addr_ex)) begin
             o_forward_b = 2'b01;
-        end else if (i_rd_wren_wb && |i_rd_addr_wb && ~|(i_rd_addr_wb ^ i_rs2_addr_ex)) begin
+        end else if (i_rd_wren_wb && ~|i_rd_addr_wb && ~|(i_rd_addr_wb ^ i_rs2_addr_ex)) begin
             o_forward_b = 2'b10;
         end
     end
