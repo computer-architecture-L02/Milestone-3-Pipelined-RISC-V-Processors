@@ -320,7 +320,7 @@ module pipelined (
 	 );
 	 
 	 brc brc(
-			  .i_rs1_data	(rs1_data_ex),
+			  .i_rs1_data	(alu_op_a_fwd),
 			  .i_rs2_data	(alu_op_b_fwd),
 			  .i_br_un		(br_un_ex),
 			  .i_instr		(instr_ex),
@@ -336,7 +336,7 @@ module pipelined (
 			 
 			 .i_pc			(pc_ex),
 			 .i_alu_data	(alu_data_ex),    
-			 .i_rs2_data	(rs2_data_ex),    
+			 .i_rs2_data	(alu_op_b_fwd),    
 			 .i_rd_addr		(rd_addr_ex),
 			 .i_instr		(instr_ex),       
 			 
