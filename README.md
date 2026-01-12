@@ -18,3 +18,10 @@ For undergraduate students, an additional penalty week is allocated to ensure th
 <img width="1220" height="756" alt="image" src="https://github.com/user-attachments/assets/72a423c5-ae74-4ddb-803d-0bdec6daa540" />
 
 For further information, please visit the file [milestone-3.pdf](./milestone-3.pdf)
+# Application
+The group has successfully synthesized the design into an FPGA (DE2) to test the assembly code. The Application title is `Convert a hexadecimal number to a decimal number and display on seven-segment LEDs`. You can access the assembly code and the converted HEX file in the folder `application`
+
+<p align="center">
+  <img width="750" height="240" alt="image" src="https://github.com/user-attachments/assets/017d7d20-45c4-46e3-b60a-b2236e5d9d39" />
+  <img width="750" height="252" alt="image" src="https://github.com/user-attachments/assets/9ef90afb-2703-4943-95f6-dbbb152a960c" />
+</p>
