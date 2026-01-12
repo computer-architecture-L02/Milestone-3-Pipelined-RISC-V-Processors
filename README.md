@@ -1,4 +1,3 @@
-# Milestone-3-Pipelined-RISC-V-Processors
 # Objective
 * Review understanding of pipeline techniques  
 
@@ -6,6 +5,8 @@
 
 * Explore the Branch Prediction technique  
 # Overview
+This is a group project in Computer Architecture (EE3203) at HCMC University of Technology (HCMUT), Vietnam
+
 In this significant milestone, students are assigned the responsibility of designing multiple models of the RV32I processor employing pipelined techniques, as outlined in the lectures.  
 
 The primary objective of this milestone is to compare at least two techniques to comprehend the functionality of pipelining a processor and address its limitations to attain enhanced performance. Given that the base processor has been successfully implemented in Milestone 2, students are permitted to reuse its components, thereby enabling a feasible timeframe of four weeks for implementing these strategies. However, it is noteworthy that individuals seeking to enhance the frequency and capacity of their processor must employ BRAMs. While not mandatory, their utilization is highly recommended and may result in additional credit.  
@@ -16,4 +17,4 @@ For undergraduate students, an additional penalty week is allocated to ensure th
 
 <img width="1220" height="756" alt="image" src="https://github.com/user-attachments/assets/72a423c5-ae74-4ddb-803d-0bdec6daa540" />
 
-Further information is included in the file [milestone-3.pdf](./milestone-3.pdf)
+For further information, please visit the file [milestone-3.pdf](./milestone-3.pdf)
